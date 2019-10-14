@@ -1,0 +1,29 @@
+{
+	"name": "reactjs-and-spring-rest",
+	"version": "1.0.0",
+	"description": "",
+	"main": "weback.config.js",
+	"scripts": {
+		"watch": "webpack --watch -d",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/dusanjovanov/employee-managment-app.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/dusanjovanov/employee-managment-app/issues"
+	},
+	"homepage": "https://github.com/dusanjovanov/employee-managment-app#readme",
+	"devDependencies": {
+		"@babel/core": "^7.6.4",
+		"@babel/preset-env": "^7.6.3",
+		"@babel/preset-react": "^7.6.3",
+		"babel-loader": "^8.0.6",
+		"webpack": "^4.41.1",
+		"webpack-cli": "^3.3.9"
+	}
+}
