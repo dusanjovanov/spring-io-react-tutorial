@@ -10,7 +10,7 @@ import {
   Select
 } from "semantic-ui-react";
 import AddEmployeeForm from "./AddEmployeeForm";
-import EmployeeList from "./EmployeeTable";
+import EmployeeTable from "./EmployeeTable";
 
 const App = () => {
   const [employees, setEmployees] = useState([]);
@@ -69,6 +69,10 @@ const App = () => {
     setPageSize(e.currentTarget.value);
   };
 
+  const onDeleteEmployee = employee => {
+    axios.delete(employee._links.self.href).then(() => loadData(0));
+  };
+
   return (
     <Container>
       <Header as="h1">Employees</Header>
@@ -88,7 +92,7 @@ const App = () => {
           </Form.Field>
         </div>
       </Form>
-      <EmployeeList employees={employees} />
+      <EmployeeTable employees={employees} onDelete={onDeleteEmployee} />
       {pagination.totalPages > 1 && (
         <Pagination
           totalPages={pagination.totalPages}

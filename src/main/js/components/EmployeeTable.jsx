@@ -2,13 +2,13 @@ import React from "react";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHeader,
   TableHeaderCell,
   TableRow
 } from "semantic-ui-react";
+import EmployeeRow from "./EmployeeRow";
 
-const EmployeeTable = ({ employees }) => {
+const EmployeeTable = ({ employees, onDelete }) => {
   return (
     <Table>
       <TableHeader>
@@ -16,15 +16,16 @@ const EmployeeTable = ({ employees }) => {
           <TableHeaderCell>First Name</TableHeaderCell>
           <TableHeaderCell>Last Name</TableHeaderCell>
           <TableHeaderCell>Description</TableHeaderCell>
+          <TableHeaderCell></TableHeaderCell>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {employees.map((e, idx) => (
-          <TableRow key={e._links.self.href}>
-            <TableCell>{e.firstName}</TableCell>
-            <TableCell>{e.lastName}</TableCell>
-            <TableCell>{e.description}</TableCell>
-          </TableRow>
+        {employees.map(employee => (
+          <EmployeeRow
+            key={employee._links.self.href}
+            employee={employee}
+            onDelete={onDelete}
+          />
         ))}
       </TableBody>
     </Table>
