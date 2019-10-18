@@ -19,7 +19,7 @@ const App = () => {
     totalPages: -1,
     currentPage: -1
   });
-  const [pageSize, setPageSize] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const loadData = pageNumber => {
@@ -83,8 +83,8 @@ const App = () => {
             value={pageSize}
             onChange={onChangePageSize}
           >
-            <option value={1}>1</option>
-            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
           </Form.Field>
         </div>
       </Form>
