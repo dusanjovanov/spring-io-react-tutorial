@@ -5,9 +5,8 @@ import {
   Container,
   Form,
   Header,
-  Modal,
-  Pagination,
-  Select
+  Icon,
+  Modal
 } from "semantic-ui-react";
 import AddEmployeeForm from "./AddEmployeeForm";
 import EmployeeTable from "./EmployeeTable";
@@ -15,24 +14,26 @@ import EmployeeTable from "./EmployeeTable";
 const App = () => {
   const [employees, setEmployees] = useState([]);
   const [schema, setSchema] = useState(null);
-  const [pagination, setPagination] = useState({
-    totalPages: -1,
-    currentPage: -1
+  const [links, setLinks] = useState({
+    first: null,
+    prev: null,
+    next: null,
+    last: null
   });
   const [pageSize, setPageSize] = useState(10);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const loadData = pageNumber => {
-    return axios
-      .get(`/api/employees?page=${pageNumber}&size=${pageSize}`)
-      .then(res => {
-        setEmployees(res.data._embedded.employees);
-        setPagination({
-          totalPages: res.data.page.totalPages,
-          currentPage: res.data.page.number
-        });
-        return res.data;
+  const loadData = url => {
+    return axios.get(url).then(res => {
+      setEmployees(res.data._embedded.employees);
+      setLinks({
+        first: res.data._links.first,
+        prev: res.data._links.prev,
+        next: res.data._links.next,
+        last: res.data._links.last
       });
+      return res.data;
+    });
   };
 
   const loadSchema = data => {
@@ -46,7 +47,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    loadData(0).then(loadSchema);
+    loadData("/api/employees?page=0&size=20").then(loadSchema);
   }, [pageSize]);
 
   const onSubmit = data => {
@@ -61,8 +62,9 @@ const App = () => {
   const onClickAdd = () => setIsModalVisible(true);
   const onCloseModal = () => setIsModalVisible(false);
 
-  const onPageChange = (e, data) => {
-    loadData(data.activePage - 1);
+  const onNavigate = to => () => {
+    const url = links[to].href;
+    loadData(url);
   };
 
   const onChangePageSize = e => {
@@ -70,7 +72,9 @@ const App = () => {
   };
 
   const onDeleteEmployee = employee => {
-    axios.delete(employee._links.self.href).then(() => loadData(0));
+    axios
+      .delete(employee._links.self.href)
+      .then(() => loadData("/api/employees?page=0&size=20"));
   };
 
   return (
@@ -93,13 +97,20 @@ const App = () => {
         </div>
       </Form>
       <EmployeeTable employees={employees} onDelete={onDeleteEmployee} />
-      {pagination.totalPages > 1 && (
-        <Pagination
-          totalPages={pagination.totalPages}
-          activePage={pagination.currentPage + 1}
-          onPageChange={onPageChange}
-        />
-      )}
+      <>
+        <Button icon onClick={onNavigate("first")} disabled={!links.first}>
+          <Icon name="angle double left" />
+        </Button>
+        <Button icon onClick={onNavigate("prev")} disabled={!links.prev}>
+          <Icon name="angle left" />
+        </Button>
+        <Button icon onClick={onNavigate("next")} disabled={!links.next}>
+          <Icon name="angle right" />
+        </Button>
+        <Button icon onClick={onNavigate("last")} disabled={!links.last}>
+          <Icon name="angle double right" />
+        </Button>
+      </>
       <Modal open={isModalVisible} onClose={onCloseModal}>
         <Modal.Header>Add Employee</Modal.Header>
         <Modal.Content>
